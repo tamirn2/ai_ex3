@@ -227,7 +227,35 @@ def independent_pair(a1, a2):
     a1.is_pos_effect(p) returns true is p is in a1.get_add()
     a1.is_neg_effect(p) returns true is p is in a1.get_delete()
     """
-    "*** YOUR CODE HERE ***"
+    # first lets check if the two actions have interference
+    a1_deletions = a1.get_delete()
+    a2_deletions = a2.get_delete()
+    a1_actions = a1.get_add()
+    a2_actions = a2.get_add()
+
+    # check if a2 uses deleted action from a1
+    for pre in a1_deletions:
+        if a2.is_pre_cond(pre):
+            return False
+
+    # check if a1 uses deleted action from a2
+    for pre in a2_deletions:
+        if a1.is_pre_cond(pre):
+            return False
+
+    # second check if the two actions have inconsistent effects
+    # check if all the pos effects of a1 are neg effects of a2
+    for act in a1_actions:
+        if a2.is_neg_effect(act):
+            return False
+
+    # check if all the pos effects of a2 are neg effects of a1
+    for act in a2_actions:
+        if a1.is_neg_effect(act):
+            return False
+
+    # we've checked all possibilities
+    return True
 
 
 if __name__ == '__main__':
@@ -249,5 +277,7 @@ if __name__ == '__main__':
     elapsed = time.clock() - start
     if plan is not None:
         print("Plan found with %d actions in %.2f seconds" % (len([act for act in plan if not act.is_noop()]), elapsed))
+        for step in plan:
+            print(step)
     else:
         print("Could not find a plan in %.2f seconds" % elapsed)
