@@ -168,7 +168,6 @@ class PlanGraphLevel(object):
         """
         previous_proposition_layer = previous_layer.get_proposition_layer()
         previous_layer_mutex_proposition = previous_proposition_layer.get_mutex_props()
-
         # update the action layer with previous prop layer
         self.update_action_layer(previous_proposition_layer)
         # update the mutex action in cur layer
